@@ -17,7 +17,7 @@ const defaultConfig: Linter.FlatConfig = {
   },
 }
 
-export function heisenyeConfig<T extends Linter.FlatConfig = Linter.FlatConfig>(
+export function config<T extends Linter.FlatConfig = Linter.FlatConfig>(
   config?: T,
 ) {
   return [
