@@ -1,22 +1,40 @@
 {
   "name": "@heisenye/eslint-config",
   "version": "0.1.2",
-  "main": "dist/index.js",
+  "main": "dist/index.mjs",
   "author": "heisenye",
   "license": "ISC",
+  "scripts": {
+    "build": "unbuild"
+  },
   "devDependencies": {
     "@types/eslint": "^8.56.10",
+    "eslint": "^8.57.0",
+    "eslint-flat-config-utils": "^0.2.5",
     "prettier": "^3.3.2",
     "typescript": "^5.4.5",
+    "unbuild": "^2.0.0",
     "vitest": "^1.6.0"
+  },
+  "peerDependencies": {
+    "eslint": "8.57.0"
   },
   "type": "module",
   "publishConfig": {
     "access": "public"
   },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "@typescript-eslint/parser": "^7.13.0",
-    "eslint": "^9.5.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3"
   }
