@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { config } from "../src/index.js"
+import { config } from "../dist/index.mjs"
 import { Linter } from "eslint"
 import eslintPluginPrettier from "eslint-plugin-prettier/recommended"
 import typescriptParser from "@typescript-eslint/parser"
