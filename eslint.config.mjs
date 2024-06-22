@@ -1,8 +1,9 @@
 import eslintPluginPrettier from "eslint-plugin-prettier/recommended"
 import typescriptParser from "@typescript-eslint/parser"
+import nodePlugin from "eslint-plugin-n"
 
 /**
- * @type {import('eslint').Linter.FlatConfig}
+ * @type {import("eslint").Linter.FlatConfig}
  */
 const config = {
   files: ["**/*.{ts,js}"],
@@ -24,5 +25,6 @@ const config = {
 
 export default [
   config,
-  eslintPluginPrettier
+  eslintPluginPrettier,
+  nodePlugin.configs["flat/recommended-script"]
 ]
