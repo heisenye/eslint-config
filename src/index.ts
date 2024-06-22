@@ -1,6 +1,7 @@
 import type { Linter } from "eslint"
 import eslintPluginPrettier from "eslint-plugin-prettier/recommended"
 import typescriptParser from "@typescript-eslint/parser"
+import nodePlugin from "eslint-plugin-n"
 
 const defaultConfig: Linter.FlatConfig = {
   files: ["**/*.{js,ts}"],
@@ -17,19 +18,26 @@ const defaultConfig: Linter.FlatConfig = {
   },
 }
 
-export function config<T extends Linter.FlatConfig = Linter.FlatConfig>(
-  config?: T,
-) {
-  return [
-    {
-      ...defaultConfig,
+export function config(...configs: Linter.FlatConfig[]): Linter.FlatConfig[] {
+  const mergedConfig = configs.reduce((acc, config) => {
+    return {
+      ...acc,
       ...config,
-      files: [...(defaultConfig.files as string[]), ...(config?.files || [])],
+      files: [...((acc.files as string[]) || []), ...(config?.files || [])],
       rules: {
-        ...defaultConfig.rules,
+        ...acc.rules,
         ...config?.rules,
       },
-    } satisfies Linter.FlatConfig,
+      plugins: {
+        ...acc.plugins,
+        ...config?.plugins,
+      },
+    } satisfies Linter.FlatConfig
+  }, defaultConfig)
+
+  return [
+    mergedConfig,
     eslintPluginPrettier,
+    nodePlugin.configs["flat/recommended-script"],
   ]
 }
