@@ -1,0 +1,14 @@
+{
+  "name": "eslint-plugin-heisenye",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "ISC",
+  "type": "module",
+  "peerDependencies": {
+    "eslint": "8.57.0"
+  },
+  "devDependencies": {
+    "@types/eslint": "^8.56.10",
+    "eslint": "^9.5.0"
+  }
+}
