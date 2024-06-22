@@ -1,15 +1,16 @@
 import { describe, it, expect } from "vitest"
-import { config } from "../dist/index.mjs"
+import { config } from "../src/index.js"
 import { Linter } from "eslint"
 import eslintPluginPrettier from "eslint-plugin-prettier/recommended"
 import typescriptParser from "@typescript-eslint/parser"
+import nodePlugin from "eslint-plugin-n"
 
 describe("function config", () => {
-  it("should merge user config with default config", () => {
+  it("should merge user configs with default config", () => {
     const userConfig: Linter.FlatConfig = {
       files: ["**/*.vue"],
       rules: {
-        "no-unuesd-vars": "error",
+        "no-unused-vars": "error",
       },
     }
 
@@ -20,7 +21,7 @@ describe("function config", () => {
           parser: typescriptParser,
         },
         rules: {
-          "no-unuesd-vars": "error",
+          "no-unused-vars": "error",
           "prettier/prettier": [
             "error",
             {
@@ -28,8 +29,10 @@ describe("function config", () => {
             },
           ],
         },
+        plugins: {},
       } satisfies Linter.FlatConfig,
       eslintPluginPrettier,
+      nodePlugin.configs["flat/recommended-script"],
     ]
 
     const result = config(userConfig)
