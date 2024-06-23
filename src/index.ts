@@ -25,11 +25,11 @@ export function config(...configs: Linter.FlatConfig[]): Linter.FlatConfig[] {
       ...config,
       files: [...((acc.files as string[]) || []), ...(config?.files || [])],
       rules: {
-        ...acc.rules,
+        ...acc?.rules,
         ...config?.rules,
       },
       plugins: {
-        ...acc.plugins,
+        ...acc?.plugins,
         ...config?.plugins,
       },
     } satisfies Linter.FlatConfig
