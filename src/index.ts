@@ -1,5 +1,5 @@
 import type { Linter } from "eslint"
-import eslintPluginPrettier from "eslint-plugin-prettier/recommended"
+import prettierPlugin from "eslint-plugin-prettier/recommended"
 import typescriptParser from "@typescript-eslint/parser"
 import nodePlugin from "eslint-plugin-n"
 
@@ -37,7 +37,7 @@ export function config(...configs: Linter.FlatConfig[]): Linter.FlatConfig[] {
 
   return [
     mergedConfig,
-    eslintPluginPrettier,
+    prettierPlugin,
     nodePlugin.configs["flat/recommended-script"],
   ]
 }
