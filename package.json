@@ -2,8 +2,8 @@
   "name": "@heisenye/eslint-config",
   "version": "0.1.4",
   "main": "dist/index.mjs",
-  "author": "heisenye",
-  "license": "ISC",
+  "author": "Heisenye <heisenye@163.com> (https://github.com/heisenye/)",
+  "license": "MIT",
   "scripts": {
     "build": "unbuild"
   },
