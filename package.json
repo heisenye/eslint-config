@@ -2,6 +2,7 @@
   "name": "@heisenye/eslint-config",
   "version": "0.1.4",
   "main": "dist/index.mjs",
+  "packageManager": "pnpm@9.4.0",
   "author": "Heisenye <heisenye@163.com> (https://github.com/heisenye/)",
   "license": "MIT",
   "scripts": {
