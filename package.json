@@ -1,5 +1,5 @@
 {
-  "name": "eslint-config",
+  "name": "@heisenye/eslint-config",
   "version": "0.1.4",
   "description": "heisenye's eslint config",
   "keywords": [
