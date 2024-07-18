@@ -1,7 +1,6 @@
 import { Linter } from "eslint"
 import { GLOB_TS } from "../globs"
 import typescriptParser from "@typescript-eslint/parser"
-import { type } from "../utils"
 import globals from "globals"
 
 export function typescript() {
@@ -15,7 +14,6 @@ export function typescript() {
         },
         parser: typescriptParser,
         ecmaVersion: "latest",
-        sourceType: type,
         parserOptions: {
           ecmaFeatures: {
             jsx: true,

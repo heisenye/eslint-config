@@ -7,7 +7,7 @@ export function prettier() {
     {
       files: [GLOB_JS_TS],
       ...eslintPluginPrettier,
-      name: "heisenye/prettier/rules",
+      name: "heisenye/prettier/setup",
     },
   ] satisfies Linter.FlatConfig[]
 }

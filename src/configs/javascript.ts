@@ -1,8 +1,7 @@
 import { Linter } from "eslint"
-import { GLOB_ALL_JS, GLOB_JS_TS, GLOB_MJS, GLOB_CJS, GLOB_JS } from "../globs"
+import { GLOB_ALL_JS, GLOB_JS_TS, GLOB_MJS, GLOB_CJS } from "../globs"
 import js from "@eslint/js"
 import globals from "globals"
-import { type } from "../utils"
 
 export function javascript() {
   return [
@@ -13,7 +12,6 @@ export function javascript() {
           ...globals.node,
           ...globals.browser,
         },
-        sourceType: type,
         ecmaVersion: "latest",
         parserOptions: {
           ecmaFeatures: {
