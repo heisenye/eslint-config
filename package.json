@@ -26,7 +26,8 @@
     "access": "public"
   },
   "scripts": {
-    "build": "unbuild"
+    "build": "unbuild",
+    "lint": "eslint ."
   },
   "devDependencies": {
     "@heisenye/prettier-config": "^0.0.1",
