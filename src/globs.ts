@@ -2,7 +2,7 @@ export const GLOB_MJS = "**/*.mjs"
 export const GLOB_CJS = "**/*.cjs"
 export const GLOB_JS = "**/*.js"
 export const GLOB_JSX = "**/*.jsx"
-export const GLOB_ALL_JS = "**/*.?{c|m}js?(x)"
+export const GLOB_ALL_JS = "**/*.?(c|m)js?(x)"
 
 export const GLOB_TS = "**/*.ts?(x)"
 
