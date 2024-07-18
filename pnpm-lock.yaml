@@ -11,6 +11,9 @@ importers:
       '@eslint/js':
         specifier: ^9.6.0
         version: 9.6.0
+      '@types/eslint':
+        specifier: ^8.56.10
+        version: 8.56.10
       '@typescript-eslint/parser':
         specifier: ^7.15.0
         version: 7.15.0(eslint@8.57.0)(typescript@5.5.3)
@@ -30,9 +33,6 @@ importers:
       '@heisenye/prettier-config':
         specifier: ^0.0.1
         version: 0.0.1(prettier@3.3.2)
-      '@types/eslint':
-        specifier: ^8.56.10
-        version: 8.56.10
       '@types/eslint__js':
         specifier: ^8.42.3
         version: 8.42.3
