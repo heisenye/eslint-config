@@ -5,6 +5,13 @@ import typescriptParser from "@typescript-eslint/parser"
 import globals from "globals"
 
 export function typescript() {
+  const tsConfig = (ts.configs.recommended as Linter.Config[]).map((config) => {
+    return {
+      files: [GLOB_TS],
+      ...config,
+    }
+  })
+
   return [
     {
       files: [GLOB_TS],
@@ -28,6 +35,6 @@ export function typescript() {
       },
       name: "heisenye/typescript/setup",
     },
-    ...(ts.configs.recommended as Linter.FlatConfig[]),
+    ...(tsConfig as Linter.FlatConfig[]),
   ] satisfies Linter.FlatConfig[]
 }
