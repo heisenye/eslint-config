@@ -77,9 +77,9 @@ export default config(
       // example
       "**/*.txt",
     ],
-    IfPublish: false,
+    allowMissingModules: true, // default is true
     // "n/no-unpublished-import" and "n/no-unpublished-require" rules will be disabled
-    useBundle: true, // default is false
+    allowUnpublishedModules: true, // default is true
     // "n/no-missing-import" and "n/no-missing-require" rules will be disabled
   }
 )
