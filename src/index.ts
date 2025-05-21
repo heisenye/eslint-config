@@ -1,6 +1,6 @@
 import { Linter } from "eslint"
 import { javascript, typescript, prettier, node } from "./configs"
-import { GLOB_ALL_JS, GLOB_DIST, GLOB_TS } from "./globs"
+import { GLOB_JS_VARIANTS, GLOB_DIST, GLOB_TS_VARIANTS } from "./globs"
 
 interface ConfigOptions {
   globalIgnores?: string[]

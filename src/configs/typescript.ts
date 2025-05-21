@@ -1,5 +1,5 @@
 import { Linter } from "eslint"
-import { GLOB_TS } from "../globs"
+import { GLOB_TS_VARIANTS } from "../globs"
 import ts from "typescript-eslint"
 import typescriptParser from "@typescript-eslint/parser"
 import globals from "globals"
@@ -7,14 +7,14 @@ import globals from "globals"
 export function typescript() {
   const tsConfig = (ts.configs.recommended as Linter.Config[]).map((config) => {
     return {
-      files: [GLOB_TS],
+      files: [GLOB_TS_VARIANTS],
       ...config,
     }
   })
 
   return [
     {
-      files: [GLOB_TS],
+      files: [GLOB_TS_VARIANTS],
       languageOptions: {
         globals: {
           ...globals.node,
@@ -33,8 +33,7 @@ export function typescript() {
       linterOptions: {
         reportUnusedDisableDirectives: true,
       },
-      name: "heisenye/typescript/setup",
     },
-    ...(tsConfig as Linter.FlatConfig[]),
-  ] satisfies Linter.FlatConfig[]
+    ...(tsConfig as Linter.Config[]),
+  ] satisfies Linter.Config[]
 }
