@@ -4,35 +4,32 @@ import { GLOB_JS_VARIANTS, GLOB_DIST, GLOB_TS_VARIANTS } from "./globs"
 
 interface ConfigOptions {
   globalIgnores?: string[]
-  userConfig?: Linter.FlatConfig
-  useBundle?: boolean
-  ifPublish?: boolean
+  userConfig?: Linter.Config
+  allowMissingModules?: boolean
+  allowUnpublishedModules?: boolean
 }
 
-export function config(options: ConfigOptions = {}) {
-  const configs: Linter.FlatConfig[] = []
-  const { userConfig, useBundle, ifPublish } = options
+export function config({
+  globalIgnores = [GLOB_DIST],
+  userConfig,
+  allowMissingModules = true,
+  allowUnpublishedModules = true,
+}: ConfigOptions = {}) {
+  const configs: Linter.Config[] = []
 
-  // default ignores are listed here
-  // {
-  //   ignores: [
-  //     "**/node_modules/",
-  //     ".git/"
-  //   ]
-  // }
-  const { globalIgnores: ignores = [GLOB_DIST] } = options
-
-  configs.push(...javascript(), ...typescript(), ...prettier(), ...node(), {
-    ignores,
+  configs.push({
+    ignores: globalIgnores,
   })
+
+  configs.push(...javascript(), ...typescript(), ...prettier(), ...node())
 
   if (userConfig) {
     configs.push(userConfig)
   }
 
-  if (useBundle) {
+  if (allowMissingModules) {
     configs.push({
-      files: [GLOB_TS, GLOB_ALL_JS],
+      files: [GLOB_TS_VARIANTS, GLOB_JS_VARIANTS],
       rules: {
         "n/no-missing-import": "off",
         "n/no-missing-require": "off",
@@ -40,9 +37,9 @@ export function config(options: ConfigOptions = {}) {
     })
   }
 
-  if (!ifPublish) {
+  if (allowUnpublishedModules) {
     configs.push({
-      files: [GLOB_TS, GLOB_ALL_JS],
+      files: [GLOB_TS_VARIANTS, GLOB_JS_VARIANTS],
       rules: {
         "n/no-unpublished-import": "off",
         "n/no-unpublished-require": "off",
