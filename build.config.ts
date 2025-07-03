@@ -7,6 +7,8 @@ export default defineBuildConfig({
     "eslint-plugin-n",
     "@typescript-eslint/parser",
     "@typescript-eslint/utils",
+    "eslint-plugin-prettier/recommended",
+    "globals",
   ],
   clean: true,
   entries: ["src/index"],
