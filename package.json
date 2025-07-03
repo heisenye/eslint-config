@@ -7,7 +7,7 @@
   ],
   "author": "heisenye <heisenye@163.com> (https://github.com/heisenye/)",
   "license": "MIT",
-  "packageManager": "pnpm@10.11.0",
+  "packageManager": "pnpm@10.12.4",
   "type": "module",
   "main": "dist/index.mjs",
   "exports": {
