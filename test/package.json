@@ -1,0 +1,19 @@
+{
+  "name": "@heisenye/eslint-config-test",
+  "private": true,
+  "author": "heisenye",
+  "license": "MIT",
+  "packageManager": "pnpm@10.12.1",
+  "scripts": {
+    "test": "vitest",
+    "test:ui": "vitest --ui"
+  },
+  "devDependencies": {
+    "@vitest/ui": "3.2.4",
+    "chalk": "^5.4.1",
+    "execa": "^9.6.0",
+    "vitest": "^3.2.4",
+    "vue": "^3.5.17"
+  },
+  "type": "module"
+}
