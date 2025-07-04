@@ -1,43 +1,51 @@
-import { Linter } from "eslint"
-import { GLOB_JS_VARIANTS, GLOB_JS_TS, GLOB_MJS, GLOB_CJS } from "../globs"
+import type { Linter } from "eslint"
 import js from "@eslint/js"
-import globals from "globals"
+import { GLOB_JS_VARIANTS, mergeRules } from "../utils"
+import type { JavaScriptOptions } from "../utils"
 
-export function javascript() {
-  return [
+const DEFAULT_RULES: Linter.RulesRecord = {
+  eqeqeq: ["error", "always", { null: "ignore" }],
+  "no-unused-vars": [
+    "error",
     {
-      files: [GLOB_JS_VARIANTS],
-      languageOptions: {
-        globals: {
-          ...globals.node,
-          ...globals.browser,
+      vars: "all",
+      args: "after-used",
+      caughtErrors: "none",
+      ignoreRestSiblings: true,
+    },
+  ],
+  "no-unused-expressions": [
+    "error",
+    {
+      allowShortCircuit: true,
+      allowTernary: true,
+      allowTaggedTemplates: true,
+      ignoreDirectives: true,
+    },
+  ],
+}
+
+export function javascript(options: JavaScriptOptions = {}): Linter.Config {
+  const {
+    ecmaVersion = "latest",
+    jsx = false,
+    rules: customRules = {},
+  } = options
+  const jsRules = js.configs.recommended.rules
+  return {
+    name: "javascript/base",
+    files: [...GLOB_JS_VARIANTS],
+    languageOptions: {
+      ecmaVersion: ecmaVersion,
+      parserOptions: {
+        ecmaFeatures: {
+          jsx,
         },
-        ecmaVersion: "latest",
-        parserOptions: {
-          ecmaFeatures: {
-            jsx: true,
-          },
-        },
-      },
-      linterOptions: {
-        reportUnusedDisableDirectives: true,
       },
     },
-    {
-      files: [GLOB_CJS],
-      languageOptions: {
-        sourceType: "commonjs",
-      },
+    linterOptions: {
+      reportUnusedDisableDirectives: true,
     },
-    {
-      files: [GLOB_MJS],
-      languageOptions: {
-        sourceType: "module",
-      },
-    },
-    {
-      files: [GLOB_JS_TS],
-      ...js.configs.recommended,
-    },
-  ] satisfies Linter.Config[]
+    rules: mergeRules(jsRules, DEFAULT_RULES, customRules),
+  }
 }

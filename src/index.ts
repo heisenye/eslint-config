@@ -1,51 +1,37 @@
 import { Linter } from "eslint"
-import { javascript, typescript, prettier, node } from "./configs"
-import { GLOB_JS_VARIANTS, GLOB_DIST, GLOB_TS_VARIANTS } from "./globs"
+import { javascript, typescript, prettier, node, preset } from "./configs"
+import { DEFAULT_IGNORES } from "./utils"
+import type { ConfigOptions } from "./utils"
 
-interface ConfigOptions {
-  globalIgnores?: string[]
-  userConfig?: Linter.Config
-  allowMissingModules?: boolean
-  allowUnpublishedModules?: boolean
-}
-
-export function config({
-  globalIgnores = [GLOB_DIST],
-  userConfig,
-  allowMissingModules = true,
-  allowUnpublishedModules = true,
+export function createConfig({
+  ecmaVersion = "latest",
+  jsx = false,
+  environment = "node",
+  javascriptRules = {},
+  typescriptRules = {},
+  typeChecking = false,
+  presetOptions = {},
+  globalIgnores = [],
+  userConfigs = [],
 }: ConfigOptions = {}) {
   const configs: Linter.Config[] = []
 
   configs.push({
-    ignores: globalIgnores,
+    name: "ignores/global",
+    ignores: [...DEFAULT_IGNORES, ...globalIgnores],
   })
 
-  configs.push(...javascript(), ...typescript(), ...prettier(), ...node())
+  configs.push(
+    javascript({ ecmaVersion, jsx, rules: javascriptRules }),
+    ...typescript({ ecmaVersion, jsx, rules: typescriptRules, typeChecking }),
+    ...prettier(),
+  )
 
-  if (userConfig) {
-    configs.push(userConfig)
-  }
+  configs.push(...node({ browser: environment === "browser" }))
 
-  if (allowMissingModules) {
-    configs.push({
-      files: [GLOB_TS_VARIANTS, GLOB_JS_VARIANTS],
-      rules: {
-        "n/no-missing-import": "off",
-        "n/no-missing-require": "off",
-      },
-    })
-  }
+  configs.push(...preset(presetOptions))
 
-  if (allowUnpublishedModules) {
-    configs.push({
-      files: [GLOB_TS_VARIANTS, GLOB_JS_VARIANTS],
-      rules: {
-        "n/no-unpublished-import": "off",
-        "n/no-unpublished-require": "off",
-      },
-    })
-  }
+  configs.push(...userConfigs)
 
   return configs
 }

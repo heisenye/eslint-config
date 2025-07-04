@@ -1,26 +1,72 @@
 import { Linter } from "eslint"
 import nodePlugin from "eslint-plugin-n"
 import {
-  GLOB_CJS,
-  GLOB_MJS,
   GLOB_JS,
+  GLOB_MJS,
   GLOB_JSX,
-  GLOB_TS_VARIANTS,
-} from "../globs"
+  GLOB_TS,
+  GLOB_MTS,
+  GLOB_TSX,
+  GLOB_CONFIG,
+  GLOB_JS_TS,
+  GLOB_CJS,
+  GLOB_CTS,
+  conditionalConfigs,
+} from "../utils"
+import globals from "globals"
 
-export function node() {
+export function node({ browser = false }): Linter.Config[] {
   return [
-    {
-      files: [GLOB_JS, GLOB_JSX, GLOB_TS_VARIANTS],
-      ...nodePlugin.configs["flat/recommended"],
-    },
-    {
-      files: [GLOB_MJS],
-      ...nodePlugin.configs["flat/recommended-module"],
-    },
-    {
-      files: [GLOB_CJS],
-      ...nodePlugin.configs["flat/recommended-script"],
-    },
-  ] satisfies Linter.Config[]
+    ...conditionalConfigs(browser, [
+      {
+        name: "node/browser-recommended",
+        files: [GLOB_JS, GLOB_MJS, GLOB_JSX, GLOB_TS, GLOB_MTS, GLOB_TSX],
+        languageOptions: {
+          sourceType: "module",
+          globals: {
+            ...(nodePlugin.configs["flat/recommended-module"].languageOptions
+              ?.globals ?? {}),
+            ...globals.browser,
+            ...Object.fromEntries(
+              Object.keys(globals.commonjs).map((global) => [global, "off"]),
+            ),
+            ...Object.fromEntries(
+              Object.keys(globals.node).map((global) => [global, "off"]),
+            ),
+          },
+        },
+        rules: {
+          ...nodePlugin.configs["flat/recommended-module"]?.rules,
+        },
+      },
+      {
+        name: "node/browser-config-recommended",
+        files: [GLOB_CONFIG],
+        languageOptions: {
+          sourceType: "module",
+          globals: {
+            ...globals.node,
+            NodeJS: false,
+          },
+        },
+      },
+    ]),
+    ...conditionalConfigs(!browser, [
+      {
+        ...nodePlugin.configs["flat/recommended"],
+        name: "node/recommended",
+        files: [...GLOB_JS_TS],
+      },
+      {
+        ...nodePlugin.configs["flat/recommended-module"],
+        name: "node/recommended-module",
+        files: [GLOB_MJS, GLOB_MTS],
+      },
+      {
+        ...nodePlugin.configs["flat/recommended-script"],
+        name: "node/recommended-commonjs",
+        files: [GLOB_CJS, GLOB_CTS],
+      },
+    ]),
+  ]
 }
