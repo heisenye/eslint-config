@@ -1,86 +1,233 @@
-<h2 style="text-align: center">@heisenye/eslint-config</h2>
-<div style="text-align: center">
+<h1 align="center">@heisenye/eslint-config</h1>
+<div align="center">
+  <h3>🎯 A Modern ESLint Configuration for JavaScript & TypeScript Projects</h3>
+  <p>Zero-config ESLint setup with sensible defaults, TypeScript support, and Prettier integration</p>
+
   <a href="https://www.npmjs.com/package/@heisenye/eslint-config">
-    <img src="https://img.shields.io/npm/v/@heisenye/eslint-config?style=for-the-badge" alt="npm version">
+    <img src="https://img.shields.io/npm/v/@heisenye/eslint-config?style=flat-square&color=brightgreen" alt="npm version">
+  </a>
+  <a href="https://www.npmjs.com/package/@heisenye/eslint-config">
+    <img src="https://img.shields.io/npm/dm/@heisenye/eslint-config?style=flat-square&color=blue" alt="npm downloads">
+  </a>
+  <a href="https://github.com/heisenye/eslint-config/blob/main/LICENSE">
+    <img src="https://img.shields.io/npm/l/@heisenye/eslint-config?style=flat-square&color=yellow" alt="license">
   </a>
 </div>
 
-### Description
+## ✨ Features
 
-- Using flat-type eslint configuration for simplicity and ease of use
-- Providing built-in support for typescript files
-- Integrating the eslint-plugin-prettier plugin for seamless Prettier compatibility and friendly support
-- Incorporating the eslint-plugin-n plugin, making it highly suitable for Node.js projects
-- By defalut, files in the dist directory at the project root are ignored during linting
+- 🚀 **ESLint Flat Config** - Uses the latest ESLint flat configuration system for better performance and simplicity
+- 📘 **First-class TypeScript Support** - Built-in TypeScript linting with optional type-aware rules
+- 💅 **Prettier Integration** - Seamless code formatting through `eslint-plugin-prettier`
+- 🟢 **Node.js Best Practices** - Includes `eslint-plugin-n` for Node.js specific linting
+- 🎯 **Smart Defaults** - Automatically ignores common directories (`dist/`, `node_modules/`, etc.)
+- ⚙️ **Fully Customizable** - Override any rule while keeping the base configuration
+- 🌐 **Environment Aware** - Optimized configs for Node.js and browser environments
 
-### Usage
+## 📦 Installation
 
 ```bash
-pnpm add @heisenye/eslint-config -D
-````
+# Using pnpm (recommended)
+pnpm add -D @heisenye/eslint-config
 
-First, create eslint.config.mjs in your project root,
+# Using npm
+npm install -D @heisenye/eslint-config
 
-```js
-// eslint.config.mjs
-import { config } from "@heisenye/eslint-config"
-
-export default config()
+# Using yarn
+yarn add -D @heisenye/eslint-config
 ```
 
-You can also pass custom config to the function
+## 🚀 Quick Start
+
+### Basic Setup
+
+Create `eslint.config.mjs` in your project root:
 
 ```js
-// eslint.config.mjs
-import { config } from "@heisenye/eslint-config"
+import { createConfig } from "@heisenye/eslint-config"
 
-export default config(
-  {
-    userConfig:
-    // your custom config
-    // example
-      {
-        files: ["src/bin/cli.ts"],
-        rules: {
-          "n/hashbang": "off",
-        },
-      },
-  },
-)
+export default createConfig()
 ```
 
-If you use Prettier, you can create a Prettier config file (e.g., .prettierrc) in your project root,
-configuration in the this file will automatically be applied to eslint
+### With Prettier
+
+This config automatically integrates with Prettier. Create a `.prettierrc` file to customize formatting:
 
 ```json
 {
-  "semi": false
+  "semi": false,
+  "singleQuote": true,
+  "tabWidth": 2
 }
 ```
 
+ESLint will now show Prettier formatting issues:
+
 ```js
-const a = 1; // ESLint: Delete `;` (prettier/prettier)
+const a = 1; // ESLint: Delete `;` [prettier/prettier]
 ```
 
-Detailed options here
+## 📖 Configuration Options
+
+### Basic Options
 
 ```js
-import { config } from "@heisenye/eslint-config"
+import { createConfig } from "@heisenye/eslint-config"
 
-export default config(
-  {
-    userConfig: {
-      // your custom config
+export default createConfig({
+  // ECMAScript version (default: "latest")
+  ecmaVersion: "latest",
+  
+  // Enable JSX support (default: false)
+  jsx: true,
+  
+  // Target environment: "node" | "browser" (default: "node")
+  environment: "browser",
+  
+  // Enable TypeScript type-checking rules (default: false)
+  typeChecking: true,
+})
+```
+
+### Custom Rules
+
+Override or add rules for JavaScript and TypeScript:
+
+```js
+export default createConfig({
+  // JavaScript-specific rules
+  javascriptRules: {
+    "no-console": "warn",
+    "prefer-const": "error",
+  },
+  
+  // TypeScript-specific rules
+  typescriptRules: {
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/explicit-function-return-type": "off",
+  },
+})
+```
+
+### Advanced Configuration
+
+```js
+export default createConfig({
+  // Additional patterns to ignore
+  globalIgnores: [
+    "**/*.generated.ts",
+    "**/vendor/**",
+  ],
+  
+  // Preset options
+  presetOptions: {
+    // Allow importing modules that might not exist (default: false)
+    allowMissingModules: true,
+    
+    // Allow importing unpublished packages (default: false)
+    allowUnpublishedModules: true,
+  },
+  
+  // Add custom ESLint configurations
+  userConfigs: [
+    {
+      files: ["**/*.test.ts", "**/*.spec.ts"],
+      rules: {
+        "@typescript-eslint/no-explicit-any": "off",
+        "no-console": "off",
+      },
     },
-    globalIngores: [
-      // global ignore files
-      // example
-      "**/*.txt",
-    ],
-    allowMissingModules: true, // default is true
-    // "n/no-unpublished-import" and "n/no-unpublished-require" rules will be disabled
-    allowUnpublishedModules: true, // default is true
-    // "n/no-missing-import" and "n/no-missing-require" rules will be disabled
-  }
-)
+    {
+      files: ["src/bin/*.ts"],
+      rules: {
+        "n/hashbang": "off",
+      },
+    },
+  ],
+})
 ```
+
+## 🎯 Common Use Cases
+
+### Node.js CLI Tool
+
+```js
+export default createConfig({
+  userConfigs: [
+    {
+      files: ["src/cli.ts"],
+      rules: {
+        "n/hashbang": "off",
+        "no-console": "off",
+      },
+    },
+  ],
+})
+```
+
+### Monorepo Setup
+
+```js
+export default createConfig({
+  typeChecking: true,
+  globalIgnores: [
+    "**/packages/*/dist/**",
+    "**/packages/*/build/**",
+  ],
+  presetOptions: {
+    allowUnpublishedModules: true, // For internal packages
+  },
+})
+```
+
+## 📝 Default Ignored Patterns
+
+The following patterns are ignored by default:
+
+- `**/dist/**` - Distribution/build outputs
+- `**/build/**` - Build outputs
+- `**/out/**` - Output directories
+- `**/node_modules/**` - Dependencies
+- `**/.git/**` - Git directory
+- `**/coverage/**` - Test coverage reports
+- `**/.next/**` - Next.js build output
+- `**/.nuxt/**` - Nuxt.js build output
+- `**/.cache/**` - Cache directories
+- `**/temp/**`, `**/tmp/**` - Temporary files
+
+## 🤔 FAQ
+
+### Can I use this with existing ESLint plugins?
+
+Yes! Add them to your `userConfigs`:
+
+```js
+import somePlugin from "eslint-plugin-something"
+
+export default createConfig({
+  userConfigs: [
+    {
+      plugins: {
+        something: somePlugin,
+      },
+      rules: {
+        "something/rule-name": "error",
+      },
+    },
+  ],
+})
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+MIT © [heisenye](https://github.com/heisenye)
+
+---
+
+<div align="center">
+  <sub>Built with ❤️ by <a href="https://github.com/heisenye">heisenye</a></sub>
+</div>
