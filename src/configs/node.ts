@@ -19,6 +19,7 @@ export function node({ browser = false }): Linter.Config[] {
   return [
     ...conditionalConfigs(browser, [
       {
+        ...nodePlugin.configs["flat/recommended-module"],
         name: "node/browser-recommended",
         files: [GLOB_JS, GLOB_MJS, GLOB_JSX, GLOB_TS, GLOB_MTS, GLOB_TSX],
         languageOptions: {
