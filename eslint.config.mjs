@@ -1,8 +1,12 @@
-import { config } from "./dist/index.mjs"
+import { createConfig } from "./dist/index.mjs"
 
-const eslintConfig = config({
-  allowMissingModules: true,
-  allowUnpublishedModules: true,
+const eslintConfig = createConfig({
+  jsx: true,
+  environment: "node",
+  presetOptions: {
+    allowMissingModules: true,
+    allowUnpublishedModules: true,
+  },
 })
 
 export default eslintConfig
