@@ -7,8 +7,11 @@ import {
 import type { PresetOptions } from "../utils"
 
 export function preset(presetOptions: PresetOptions): Linter.Config[] {
-  const { allowMissingModules = false, allowUnpublishedModules = false } =
-    presetOptions
+  const {
+    allowMissingModules = false,
+    allowUnpublishedModules = false,
+    allowExtraneousModules = false,
+  } = presetOptions
 
   return [
     ...conditionalConfigs(allowMissingModules, {
@@ -25,6 +28,14 @@ export function preset(presetOptions: PresetOptions): Linter.Config[] {
       rules: {
         "n/no-unpublished-import": "off",
         "n/no-unpublished-require": "off",
+      },
+    }),
+    ...conditionalConfigs(allowExtraneousModules, {
+      name: "preset/allow-extraneous-modules",
+      files: [...GLOB_JS_VARIANTS, ...GLOB_TS_VARIANTS],
+      rules: {
+        "n/no-extraneous-import": "off",
+        "n/no-extraneous-require": "off",
       },
     }),
   ]

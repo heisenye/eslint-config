@@ -26,11 +26,7 @@ const DEFAULT_RULES: Linter.RulesRecord = {
 }
 
 export function javascript(options: JavaScriptOptions = {}): Linter.Config {
-  const {
-    ecmaVersion = "latest",
-    jsx = false,
-    rules: customRules = {},
-  } = options
+  const { ecmaVersion, jsx, javascriptRules } = options
   const jsRules = js.configs.recommended.rules
   return {
     name: "javascript/base",
@@ -46,6 +42,6 @@ export function javascript(options: JavaScriptOptions = {}): Linter.Config {
     linterOptions: {
       reportUnusedDisableDirectives: true,
     },
-    rules: mergeRules(jsRules, DEFAULT_RULES, customRules),
+    rules: mergeRules(jsRules, DEFAULT_RULES, javascriptRules),
   }
 }
