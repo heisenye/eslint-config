@@ -4,7 +4,14 @@
     /* Target */
     "jsx": "preserve",
     "jsxImportSource": "vue",
-
+    /* Module */
+    "allowJs": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "../src/*"
+      ]
+    },
     /* Linting */
     "strict": false,
     "noUnusedLocals": false,
