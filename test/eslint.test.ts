@@ -1,108 +1,100 @@
-import { describe, it, beforeAll, expect } from "vitest"
-import { execa } from "execa"
-import path from "node:path"
-import fs from "node:fs"
-import TestLogger from "./testLogger"
+import { ESLint, Linter } from "eslint"
+import { describe, it, expect, beforeAll } from "vitest"
+import { createConfig } from "@/index"
+import { javascript, typescript } from "@/configs"
 
-if (!process.env.CI) TestLogger.setLevel(1)
+enum Severity {
+  off,
+  warn,
+  error,
+}
 
-const eslintBin = path.resolve(__dirname, "../node_modules/.bin/eslint")
-const fixturesRoot = path.resolve(__dirname, "fixtures")
-const badFixturesDir = path.resolve(__dirname, "fixtures/bad")
-const goodFixturesDir = path.resolve(__dirname, "fixtures/good")
+function verifyRule(
+  config: Linter.Config,
+  ruleName: string,
+  severity: Linter.RuleSeverity,
+) {
+  const rule = config.rules?.[ruleName]
+  expect(rule, `Missing rule ${ruleName}`).toBeDefined()
 
-const runESLintOnFile = async (
-  fileName: string,
-  cwd: string,
-  reject: boolean = false,
-) => {
-  return execa(eslintBin, [fileName, "--no-error-on-unmatched-pattern"], {
-    cwd,
-    reject,
+  if (Array.isArray(rule)) {
+    expect(rule[0]).toBe(severity)
+  } else {
+    expect(rule).toBe(severity)
+  }
+}
+
+function getRuleSeverity(entry: Linter.RuleEntry) {
+  if (Array.isArray(entry)) return entry[0]
+  return entry
+}
+
+describe("Base JsConfig", () => {
+  let jsBaseConfig: Linter.Config
+
+  beforeAll(async () => {
+    const eslint = new ESLint({ baseConfig: createConfig() })
+    jsBaseConfig = (await eslint.calculateConfigForFile(
+      "test.js",
+    )) as Linter.Config
   })
-}
 
-const getTestFiles = (directory: string): string[] => {
-  try {
-    return fs
-      .readdirSync(directory, { withFileTypes: true })
-      .filter(
-        (dirent) =>
-          dirent.isFile() &&
-          /\.(js|cjs|mjs|jsx|ts|cts|mts|tsx)$/.test(dirent.name),
-      )
-      .map((dirent) => dirent.name)
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-      TestLogger.error(`Directory "${directory}" doest not exist`)
-    } else {
-      TestLogger.error(`Could not to read directory ${directory}\n${error}`)
-    }
-    return []
+  it("should match rule snapshot", () => {
+    expect(jsBaseConfig).toMatchSnapshot()
+  })
+
+  for (const [ruleName, ruleEntry] of Object.entries(javascript().rules)) {
+    const ruleSeverity = getRuleSeverity(ruleEntry)
+    const expectedSeverity = (
+      typeof ruleSeverity === "string" ? Severity[ruleSeverity] : ruleSeverity
+    ) as Linter.RuleSeverity
+
+    it(`should have rule ${ruleName} as ${ruleSeverity}`, () => {
+      verifyRule(jsBaseConfig, ruleName, expectedSeverity)
+    })
   }
-}
-
-async function validateConfiguration(file: string, cwd: string) {
-  const { exitCode, stdout, stderr } = await runESLintOnFile(file, cwd)
-  if (exitCode !== 0) {
-    TestLogger.error(`ESLint configuration check failed\n${stdout || stderr}`)
-    throw new Error("Failed to validate configuration")
-  }
-  TestLogger.info("ESLint configuration check passed")
-}
-
-beforeAll(async () => {
-  await validateConfiguration("example.ts", fixturesRoot)
-  TestLogger.info("ESLint setup completed successfully")
 })
 
-interface TestSuiteConfig {
-  name: "bad" | "good"
-  directory: string
-  shouldPass: boolean
-}
+describe("Base TsConfig", () => {
+  let tsBaseConfig: Linter.Config
+  let tsTypeCheckedConfig: Linter.Config
 
-const testSuites = [
-  { name: "bad", directory: badFixturesDir, shouldPass: false },
-  { name: "good", directory: goodFixturesDir, shouldPass: true },
-] as const satisfies TestSuiteConfig[]
-
-testSuites.forEach(({ name, directory, shouldPass }) => {
-  describe(`ESLint Tests: ${name} files`, () => {
-    const files = getTestFiles(directory)
-
-    if (files.length === 0) {
-      it.skip("no test files found", () => {
-        return
-      })
-    }
-    for (const file of files) {
-      it.concurrent(
-        `should ${shouldPass ? "pass" : "fail"} on ${file}`,
-        async () => {
-          const { exitCode, stdout, stderr } = await runESLintOnFile(
-            file,
-            directory,
-          )
-
-          if (shouldPass) {
-            if (exitCode !== 0) {
-              TestLogger.error(
-                `Unexpected ESLint to pass for ${file}, but it failed.\n${stdout || stderr}`,
-              )
-            }
-            expect(exitCode).toBe(0)
-          } else {
-            if (exitCode === 0) {
-              TestLogger.error(
-                `Expected ESLint to fail for ${file}, but it passed.`,
-              )
-            }
-            expect(exitCode).not.toBe(0)
-          }
-        },
-        20000,
-      )
-    }
+  beforeAll(async () => {
+    tsBaseConfig = (await new ESLint({
+      baseConfig: createConfig(),
+    }).calculateConfigForFile("test.ts")) as Linter.Config
+    tsTypeCheckedConfig = (await new ESLint({
+      baseConfig: createConfig({ typeChecking: true, tsconfigRootDir: "." }),
+    }).calculateConfigForFile("test.ts")) as Linter.Config
   })
+
+  it("should match rule snapshot", () => {
+    expect(tsBaseConfig).toMatchSnapshot()
+    expect(tsTypeCheckedConfig).toMatchSnapshot()
+  })
+
+  const tsBaseRules = typescript()[0].rules
+  const typecheckedRules = typescript({ typeChecking: true })[1].rules
+
+  for (const [ruleName, ruleEntry] of Object.entries(tsBaseRules)) {
+    const ruleSeverity = getRuleSeverity(ruleEntry)
+    const expectedSeverity = (
+      typeof ruleSeverity === "string" ? Severity[ruleSeverity] : ruleSeverity
+    ) as Linter.RuleSeverity
+
+    it(`should have rule ${ruleName} as ${ruleSeverity}`, () => {
+      verifyRule(tsBaseConfig, ruleName, expectedSeverity)
+    })
+  }
+
+  for (const [ruleName, ruleEntry] of Object.entries(typecheckedRules)) {
+    const ruleSeverity = getRuleSeverity(ruleEntry)
+    const expectedSeverity = (
+      typeof ruleSeverity === "string" ? Severity[ruleSeverity] : ruleSeverity
+    ) as Linter.RuleSeverity
+
+    it(`should have rule ${ruleName} as ${ruleSeverity}`, () => {
+      verifyRule(tsTypeCheckedConfig, ruleName, expectedSeverity)
+    })
+  }
 })
