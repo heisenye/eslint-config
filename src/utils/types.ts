@@ -10,22 +10,29 @@ interface LanguageOptions {
 export interface PresetOptions {
   allowMissingModules?: boolean
   allowUnpublishedModules?: boolean
+  allowExtraneousModules?: boolean
 }
 
-export interface ConfigOptions extends LanguageOptions {
+export interface ConfigOptions
+  extends LanguageOptions,
+    JavaScriptOptions,
+    TypeScriptOptions {
   environment?: environment
   globalIgnores?: string[]
-  javascriptRules?: JavaScriptOptions["rules"]
-  typescriptRules?: TypeScriptOptions["rules"]
+  javascriptRules?: JavaScriptOptions["javascriptRules"]
+  typescriptRules?: TypeScriptOptions["typescriptRules"]
   typeChecking?: boolean
+  tsconfigRootDir?: string
   presetOptions?: PresetOptions
   userConfigs?: Linter.Config[]
 }
 
 export interface JavaScriptOptions extends LanguageOptions {
-  rules?: Linter.RulesRecord
+  javascriptRules?: Linter.RulesRecord
 }
 
-export interface TypeScriptOptions extends JavaScriptOptions {
+export interface TypeScriptOptions extends LanguageOptions {
+  typescriptRules?: Linter.RulesRecord
   typeChecking?: boolean
+  tsconfigRootDir?: string
 }
