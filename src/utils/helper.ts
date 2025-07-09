@@ -1,15 +1,15 @@
 import type { Linter } from "eslint"
 
 export function mergeRules(
-  ...rules: (Linter.RulesRecord | undefined)[]
+  ...rules: (Partial<Linter.RulesRecord> | undefined)[]
 ): Linter.RulesRecord {
-  return Object.assign({}, ...rules)
+  return Object.assign({}, ...rules.filter(Boolean)) as Linter.RulesRecord
 }
 
 export function conditionalConfigs(
   condition: boolean | undefined,
-  config: Linter.Config | Linter.Config[],
+  configs: Linter.Config | Linter.Config[],
 ): Linter.Config[] {
   if (!condition) return []
-  return Array.isArray(config) ? config : [config]
+  return Array.isArray(configs) ? configs : [configs]
 }
