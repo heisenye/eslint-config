@@ -86,6 +86,9 @@ export default createConfig({
   
   // Enable TypeScript type-checking rules (default: false)
   typeChecking: true,
+  
+  // Path to TypeScript config 
+  tsconfigRootDir: ".",
 })
 ```
 
@@ -122,10 +125,16 @@ export default createConfig({
   // Preset options
   presetOptions: {
     // Allow importing modules that might not exist (default: false)
+    // "n/no-missing-import": "off", "n/no-missing-require": "off"
     allowMissingModules: true,
     
     // Allow importing unpublished packages (default: false)
+    // "n/no-unpublished-import": "off", "n/no-unpublished-require": "off"
     allowUnpublishedModules: true,
+    
+    // Allow importing extraneous modules (default: false)
+    // "n/no-extraneous-import": "off", "n/no-extraneous-require": "off"
+    allowExtraneousModules: true,
   },
   
   // Add custom ESLint configurations
